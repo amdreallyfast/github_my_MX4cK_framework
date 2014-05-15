@@ -58,6 +58,11 @@ int add_function_to_queue(void *function_ptr)
          node_ptr->function_ptr = function_ptr;
          break;
       }
+      else
+      {
+         // node already has a function in it, so go to the next one
+         node_ptr = node_ptr->next_ptr;
+      }
    }
 
    if (count == MAX_FUNCTION_NODES)
