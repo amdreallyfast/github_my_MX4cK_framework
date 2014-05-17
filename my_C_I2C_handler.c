@@ -27,22 +27,6 @@
 
 
 
-#define SYSTEM_CLOCK            80000000
-
-// Note: This is defined because the #pragma statements are not definitions,
-// so we can't use FPBDIV, and therefore we define our own for our period
-// calculations
-#define PB_DIV              2
-
-// Note: This is defined because Tx_PS_1_SOMEPRSCALAR is a bitshift meant for
-// a control register, not the prescalar value itself
-#define PS_256              256
-
-// define the timer period constant for the delay timer
-#define T1_TOGGLES_PER_SEC  1000
-#define T1_TICK_PR          SYSTEM_CLOCK/PB_DIV/PS_256/T1_TOGGLES_PER_SEC
-#define T1_OPEN_CONFIG      T1_ON | T1_SOURCE_INT | T1_PS_1_256
-
 // these are the I2C addresses of the warious daisy chained pmods
 #define I2C_ADDR_PMOD_TEMP      0x4B
 #define TWI_ADDR_PMOD_CLS       0x48
@@ -65,7 +49,7 @@
 
 
 // define the frequency (??what kind of frequency? clock frequency? bit transfer frequency? byte transfer frequency??) at which an I2C module will operate
-#define I2C_FREQ_1KHZ       100000
+#define I2C_FREQ_KHZ       100000
 
 
 // Globals for setting up pmod CLS
@@ -89,19 +73,22 @@ BOOL moduleIsValid(I2C_MODULE modID)
     return TRUE;
 }
 
-BOOL setupI2C(I2C_MODULE modID)
+BOOL setupI2C(I2C_MODULE modID, unsigned int pb_clock)
 {
     // this value stores the return value of I2CSetFrequency(...), and it can
     // be used to compare the actual set frequency against the desired
     // frequency to check for discrepancies
-    UINT32 actualClock;
+    UINT32 actualClock = 0;
 
     // check that we are dealing with a valid I2C module
     if (!moduleIsValid(modID)) { return FALSE; }
 
     // Set the I2C baudrate, then enable the module
-    actualClock = I2CSetFrequency(modID, SYSTEM_CLOCK, I2C_FREQ_1KHZ);
+    actualClock = I2CSetFrequency(modID, pb_clock, I2C_FREQ_KHZ);
     I2CEnable(modID, TRUE);
+
+    // all seemed to go well
+    return TRUE;
 }
 
 BOOL StartTransferWithoutRestart(I2C_MODULE modID)

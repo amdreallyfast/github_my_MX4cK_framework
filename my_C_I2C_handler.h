@@ -34,7 +34,7 @@ typedef struct gyroData
 
 
 BOOL moduleIsValid(I2C_MODULE modID);
-BOOL setupI2C(I2C_MODULE modID);
+BOOL setupI2C(I2C_MODULE modID, unsigned int pb_clock);
 BOOL StartTransferWithoutRestart(I2C_MODULE modID);
 BOOL StartTransferWithRestart(I2C_MODULE modID);
 BOOL StopTransfer(I2C_MODULE modID);
