@@ -64,6 +64,20 @@ public:
    bool gyro_read(I2C_MODULE module_ID, GYRO_DATA *argData);
 
 private:
+   // make the default copy constructor and copy operators private too
+   // Note: These explicit declarations as private will ensure that someone
+   // can't make the mistake, as I did, of attempting to initialize an i2c
+   // handler reference as follows:
+   //  my_i2c_handler i2c_ref = my_i2c_handler::get_instance();
+   // This actually calls the copy constructor, which, as a method of this
+   // class, has access to the private constructor.  Thus, the copy constructor
+   // will actually make a new instance of what is supposed to be a singleton.
+   //
+   // The proper way to initialize is this (notice the extra &):
+   //  my_i2c_handler& i2c_ref = my_i2c_handler::get_instance();
+   my_i2c_handler(const my_i2c_handler&);
+   my_i2c_handler& operator=(const my_i2c_handler&);
+
    my_i2c_handler();
 
    bool module_is_valid(I2C_MODULE module_ID);

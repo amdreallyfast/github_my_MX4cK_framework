@@ -43,7 +43,7 @@ void execute_functions_in_queue(void)
    }
 }
 
-int add_function_to_queue(void *function_ptr)
+int add_function_to_queue(void (*new_function_ptr)(void))
 {
    int count = 0;
    Node *node_ptr = g_curr_node_ptr;
@@ -55,7 +55,7 @@ int add_function_to_queue(void *function_ptr)
       if (0 == node_ptr->function_ptr)
       {
          // node is empty, so add the function here
-         node_ptr->function_ptr = function_ptr;
+         node_ptr->function_ptr = new_function_ptr;
          break;
       }
       else
